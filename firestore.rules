@@ -1,0 +1,35 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null &&
+        request.auth.token.email == 'admin@autopulse.local';
+    }
+
+    match /products/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /articles/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /categories/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /subscribers/{id} {
+      allow create: if request.auth == null;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /messages/{id} {
+      allow create: if request.auth == null;
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

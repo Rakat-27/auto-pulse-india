@@ -1,22 +1,12 @@
+import { db } from "@/lib/firebase";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+
 type ContactPayload = {
   name?: string;
   email?: string;
   subject?: string;
   message?: string;
 };
-
-type ContactMessage = Required<ContactPayload> & {
-  id: string;
-  receivedAt: string;
-};
-
-const globalForContact = globalThis as typeof globalThis & {
-  autoPulseContactMessages?: ContactMessage[];
-};
-
-const contactMessages =
-  globalForContact.autoPulseContactMessages ??
-  (globalForContact.autoPulseContactMessages = []);
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -26,7 +16,7 @@ export async function GET() {
   return Response.json({
     ok: true,
     endpoint: "/api/contact",
-    storedMessages: contactMessages.length,
+    storage: "Firestore",
   });
 }
 
@@ -34,7 +24,7 @@ export async function POST(request: Request) {
   try {
     const body = (await request.json()) as ContactPayload;
     const name = body.name?.trim();
-    const email = body.email?.trim();
+    const email = body.email?.trim().toLowerCase();
     const subject = body.subject?.trim();
     const message = body.message?.trim();
 
@@ -52,29 +42,24 @@ export async function POST(request: Request) {
       );
     }
 
-    const contactMessage: ContactMessage = {
-      id: crypto.randomUUID(),
+    const document = await addDoc(collection(db, "messages"), {
       name,
       email,
       subject,
       message,
+      status: "unread",
       receivedAt: new Date().toISOString(),
-    };
-
-    contactMessages.unshift(contactMessage);
+      createdAt: serverTimestamp(),
+    });
 
     return Response.json(
-      {
-        success: true,
-        id: contactMessage.id,
-        message: "Message received successfully.",
-      },
+      { success: true, id: document.id, message: "Message received successfully." },
       { status: 201 },
     );
   } catch {
     return Response.json(
-      { error: "Invalid request body. Send JSON data to this endpoint." },
-      { status: 400 },
+      { error: "Unable to save your message right now." },
+      { status: 500 },
     );
   }
 }

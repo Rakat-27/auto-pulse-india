@@ -1,4 +1,5 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 // আপনার .env.local ফাইল থেকে সিক্রেট কি-গুলো এখানে রিড হবে
@@ -16,4 +17,5 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
 // পুরো প্রোজেক্টে ব্যবহার করার জন্য ফায়ারস্টোর ডেটাবেস এক্সপোর্ট করা হলো
 export const db = getFirestore(app);
+export const auth = getAuth(app);
 export default app;

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   FaBars,
@@ -17,6 +18,7 @@ import {
 } from "react-icons/fa";
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [currentDate] = useState(() => {
     const options: Intl.DateTimeFormatOptions = {
       weekday: "long",
@@ -44,6 +46,10 @@ export default function Navbar() {
     document.documentElement.classList.toggle("dark", enabled);
     requestAnimationFrame(() => setDarkMode(enabled));
   }, []);
+
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <header className="w-full bg-white text-zinc-900 font-sans border-b border-zinc-200 select-none transition-colors duration-200 dark:bg-zinc-950 dark:text-white dark:border-zinc-800">
