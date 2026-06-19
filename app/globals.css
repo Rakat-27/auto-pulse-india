@@ -1,26 +1,69 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root.dark {
+  color-scheme: dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: #ffffff;
+}
+
+html.dark {
+  background: #09090b;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+.dark .bg-white {
+  background-color: #09090b;
+}
+
+.dark .bg-\[\#fcfcfc\],
+.dark .bg-\[\#f9f9f9\],
+.dark .bg-\[\#fdfdfd\],
+.dark .bg-zinc-50,
+.dark .bg-zinc-100 {
+  background-color: #18181b;
+}
+
+.dark .border-zinc-100,
+.dark .border-zinc-200,
+.dark .border-zinc-200\/60 {
+  border-color: #27272a;
+}
+
+.dark .text-zinc-900 {
+  color: #ffffff;
+}
+
+.dark .text-zinc-800 {
+  color: #e4e4e7;
+}
+
+.dark .text-zinc-700 {
+  color: #d4d4d8;
+}
+
+.dark .text-zinc-600 {
+  color: #a1a1aa;
+}
+
+.dark .text-zinc-500,
+.dark .text-zinc-400 {
+  color: #71717a;
+}
+
+.dark input.bg-white,
+.dark textarea.bg-white {
+  background-color: #09090b;
 }
