@@ -1,9 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEnvelope, FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
+import { onValue, ref } from "firebase/database";
+import { db } from "@/lib/firebase";
 
 type SubmitStatus = "idle" | "success" | "error";
+type ContactDetails = { phone: string; email: string; location: string };
+
+const fallbackContactDetails: ContactDetails = {
+  phone: "+880 1234 567890",
+  email: "contact@autopulse.com",
+  location: "Sylhet, Bangladesh",
+};
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -15,6 +24,12 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle");
   const [statusMessage, setStatusMessage] = useState("");
+  const [contactDetails, setContactDetails] = useState<ContactDetails>(fallbackContactDetails);
+
+  useEffect(() => onValue(ref(db, "siteSettings/contact"), (snapshot) => {
+    const value = snapshot.val() as Partial<ContactDetails> | null;
+    if (value) setContactDetails({ ...fallbackContactDetails, ...value });
+  }), []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,7 +93,7 @@ export default function ContactPage() {
                   Call Us
                 </h3>
                 <p className="text-[11px] text-zinc-500 font-bold mt-1">
-                  +880 1234 567890
+                  {contactDetails.phone}
                 </p>
               </div>
             </div>
@@ -90,7 +105,7 @@ export default function ContactPage() {
                   Email
                 </h3>
                 <p className="text-[11px] text-zinc-500 font-bold mt-1">
-                  contact@autopulse.com
+                  {contactDetails.email}
                 </p>
               </div>
             </div>
@@ -102,7 +117,7 @@ export default function ContactPage() {
                   Location
                 </h3>
                 <p className="text-[11px] text-zinc-500 font-bold mt-1">
-                  Sylhet, Bangladesh
+                  {contactDetails.location}
                 </p>
               </div>
             </div>

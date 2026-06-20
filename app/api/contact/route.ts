@@ -1,5 +1,4 @@
-import { db } from "@/lib/firebase";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { pushRecord } from "@/lib/realtime-db";
 
 type ContactPayload = {
   name?: string;
@@ -16,7 +15,7 @@ export async function GET() {
   return Response.json({
     ok: true,
     endpoint: "/api/contact",
-    storage: "Firestore",
+    storage: "Firebase Realtime Database",
   });
 }
 
@@ -42,18 +41,18 @@ export async function POST(request: Request) {
       );
     }
 
-    const document = await addDoc(collection(db, "messages"), {
+    const id = await pushRecord("messages", {
       name,
       email,
       subject,
       message,
       status: "unread",
       receivedAt: new Date().toISOString(),
-      createdAt: serverTimestamp(),
+      createdAt: new Date().toISOString(),
     });
 
     return Response.json(
-      { success: true, id: document.id, message: "Message received successfully." },
+      { success: true, id, message: "Message received successfully." },
       { status: 201 },
     );
   } catch {

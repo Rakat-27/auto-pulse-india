@@ -1,0 +1,30 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "articles": { ".read": true, ".write": "auth != null && auth.token.email === 'admin@autopulse.local'", ".indexOn": ["categorySlug", "publishedAt"] },
+    "categories": { ".read": true, ".write": "auth != null && auth.token.email === 'admin@autopulse.local'", ".indexOn": ["slug"] },
+    "products": { ".read": true, ".write": "auth != null && auth.token.email === 'admin@autopulse.local'" },
+    "siteSettings": {
+      "contact": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email === 'admin@autopulse.local'",
+        ".validate": "newData.hasChildren(['phone', 'email', 'location'])"
+      }
+    },
+    "subscribers": {
+      ".read": "auth != null && auth.token.email === 'admin@autopulse.local'",
+      "$emailKey": {
+        ".write": "!data.exists() || (auth != null && auth.token.email === 'admin@autopulse.local')",
+        ".validate": "newData.hasChildren(['email', 'subscribedAt']) && newData.child('email').isString() && newData.child('subscribedAt').isString()"
+      }
+    },
+    "messages": {
+      ".read": "auth != null && auth.token.email === 'admin@autopulse.local'",
+      "$messageId": {
+        ".write": "!data.exists() || (auth != null && auth.token.email === 'admin@autopulse.local')",
+        ".validate": "newData.hasChildren(['name', 'email', 'subject', 'message', 'status', 'receivedAt'])"
+      }
+    }
+  }
+}

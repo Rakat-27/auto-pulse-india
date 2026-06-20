@@ -17,6 +17,8 @@ export default function AboutUs() {
 
   // Submit Confirmation State
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -30,19 +32,32 @@ export default function AboutUs() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
 
-    // Dynamic Submit Simulation
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+    setSubmissionError("");
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formData, subject: "Newsroom tip / query" }),
+      });
+      const result = (await response.json()) as { error?: string };
+      if (!response.ok) throw new Error(result.error || "Unable to send your message.");
 
-    // Clear data after brief window closing delay
-    setTimeout(() => {
-      setIsModalOpen(false);
-      setIsSubmitted(false);
-      setFormData({ name: "", email: "", message: "" });
-    }, 2500);
+      setIsSubmitted(true);
+      setTimeout(() => {
+        setIsModalOpen(false);
+        setIsSubmitted(false);
+        setFormData({ name: "", email: "", message: "" });
+      }, 2500);
+    } catch (error) {
+      setSubmissionError(error instanceof Error ? error.message : "Unable to send your message.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -315,11 +330,13 @@ export default function AboutUs() {
                   />
                 </div>
 
+                {submissionError && <p className="rounded-sm bg-red-50 p-2 text-xs font-semibold text-red-700 dark:bg-red-950/30 dark:text-red-300">{submissionError}</p>}
                 <button
                   type="submit"
-                  className="bg-red-600 hover:bg-red-700 text-white font-black uppercase text-[10px] tracking-widest py-2.5 rounded-sm transition-colors mt-2 shadow-md"
+                  disabled={isSubmitting}
+                  className="bg-red-600 hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60 text-white font-black uppercase text-[10px] tracking-widest py-2.5 rounded-sm transition-colors mt-2 shadow-md"
                 >
-                  Dispatch to Editors
+                  {isSubmitting ? "Sending…" : "Dispatch to Editors"}
                 </button>
               </form>
             )}

@@ -1,0 +1,20 @@
+{
+  "siteMeta": {
+    "schemaVersion": 1,
+    "initializedAt": "2026-06-20T00:00:00.000Z",
+    "name": "Auto Pulse India"
+  },
+  "categories": {
+    "car-news": { "slug": "car-news", "title": "Car News", "description": "Latest car launches, spy shots, EV updates, and automotive industry trends." },
+    "bike-news": { "slug": "bike-news", "title": "Bike News", "description": "Updates on performance motorcycles, commuter bikes, and electric two-wheelers." },
+    "reviews": { "slug": "reviews", "title": "Expert Reviews", "description": "In-depth, independent road and track reviews." },
+    "comparisons": { "slug": "comparisons", "title": "Vehicle Comparisons", "description": "Head-to-head vehicle specifications and real-world comparisons." },
+    "upcoming-vehicles": { "slug": "upcoming-vehicles", "title": "Upcoming Vehicles", "description": "Anticipated car, bike, and EV launches." },
+    "videos": { "slug": "videos", "title": "Videos & Walkarounds", "description": "Reviews, exhaust notes, walkarounds, and event coverage." },
+    "features": { "slug": "features", "title": "Special Features & Tech", "description": "Technology deep-dives, maintenance tips, and automotive opinion." }
+  },
+  "articles": {},
+  "products": {},
+  "subscribers": {},
+  "messages": {}
+}

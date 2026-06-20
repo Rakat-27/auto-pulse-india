@@ -1,0 +1,138 @@
+{
+  "articles": {
+    "tata-nexon-ev-adas": {
+      "title": "Next-Gen Tata Nexon EV Spied Testing with Advanced ADAS Radar",
+      "excerpt": "New spy images reveal a front-mounted radar system, redesigned alloys, and a larger touchscreen infotainment unit.",
+      "image": "https://images.unsplash.com/photo-1563720223185-11003d516935?w=1200&auto=format&fit=crop&q=80",
+      "author": "Rahat Zaman",
+      "categorySlug": "car-news",
+      "categoryTitle": "Car News",
+      "status": "Published",
+      "publishedAt": "2026-06-11T09:00:00.000Z"
+    },
+    "toyota-century-suv": {
+      "title": "Toyota Century SUV Officially Confirmed for South Asian Market",
+      "excerpt": "Toyota's ultra-luxury flagship SUV is expected with a 3.5L V6 plug-in hybrid powertrain.",
+      "image": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200&auto=format&fit=crop&q=80",
+      "author": "Asif Iqbal",
+      "categorySlug": "car-news",
+      "categoryTitle": "Car News",
+      "status": "Published",
+      "publishedAt": "2026-06-09T09:00:00.000Z"
+    },
+    "yamaha-r15-v5": {
+      "title": "Yamaha R15 V5 Launch Timeline Leaked: What to Expect?",
+      "excerpt": "Patent leaks point to traction-control modes, a lighter subframe, and a minor power bump for the next R15.",
+      "image": "https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=1200&auto=format&fit=crop&q=80",
+      "author": "Sabbir Ahmed",
+      "categorySlug": "bike-news",
+      "categoryTitle": "Bike News",
+      "status": "Published",
+      "publishedAt": "2026-06-11T07:00:00.000Z"
+    },
+    "suzuki-gixxer-titanium": {
+      "title": "Suzuki Gixxer SF 250 Gets New Matte Titanium Edition",
+      "excerpt": "Suzuki refreshes its quarter-litre sport bike with a matte colour scheme and smartphone navigation assistance.",
+      "image": "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=1200&auto=format&fit=crop&q=80",
+      "author": "Imran Khan",
+      "categorySlug": "bike-news",
+      "categoryTitle": "Bike News",
+      "status": "Published",
+      "publishedAt": "2026-06-08T09:00:00.000Z"
+    },
+    "bmw-x5-lci-review": {
+      "title": "Comprehensive Road Test: Driving the All-New BMW X5 LCI Facelift",
+      "excerpt": "We spend a week with the straight-six mild-hybrid luxury SUV to see whether it remains the driver's choice.",
+      "image": "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=1200&auto=format&fit=crop&q=80",
+      "author": "Tahmid Hasan",
+      "categorySlug": "reviews",
+      "categoryTitle": "Expert Reviews",
+      "status": "Published",
+      "publishedAt": "2026-06-10T09:00:00.000Z"
+    },
+    "pulsar-ns400z-vs-duke-390": {
+      "title": "Mega Shootout: Bajaj Pulsar NS400Z vs KTM Duke 390",
+      "excerpt": "A head-to-head look at performance, value, and real-world ride quality from two punchy street machines.",
+      "image": "https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?w=1200&auto=format&fit=crop&q=80",
+      "author": "Rahat Zaman",
+      "categorySlug": "comparisons",
+      "categoryTitle": "Vehicle Comparisons",
+      "status": "Published",
+      "publishedAt": "2026-06-07T09:00:00.000Z"
+    },
+    "upcoming-performance-bikes": {
+      "title": "Top 5 Highly Anticipated Performance Bikes Launching in Q3 2026",
+      "excerpt": "From updated Royal Enfield 650s to a new entry-level Aprilia RS, here are the machines to watch.",
+      "image": "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=1200&auto=format&fit=crop&q=80",
+      "author": "Sabbir Ahmed",
+      "categorySlug": "upcoming-vehicles",
+      "categoryTitle": "Upcoming Vehicles",
+      "status": "Published",
+      "publishedAt": "2026-06-05T09:00:00.000Z"
+    },
+    "thar-armado-video": {
+      "title": "Video: Mahindra Thar 5-Door Armado Deep Mud Off-Road Test",
+      "excerpt": "We take the rugged five-door Thar into extreme slush to test its updated differential and low-range gearbox.",
+      "image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=1200&auto=format&fit=crop&q=80",
+      "author": "AutoPulse Media",
+      "categorySlug": "videos",
+      "categoryTitle": "Videos & Walkarounds",
+      "status": "Published",
+      "publishedAt": "2026-06-11T12:00:00.000Z"
+    },
+    "dual-chamber-air-suspension": {
+      "title": "How Dual-Chamber Air Suspension Works in Modern Vehicles",
+      "excerpt": "A clear breakdown of the physics and electronics behind modern adaptive air-suspension systems.",
+      "image": "https://images.unsplash.com/photo-1619642751034-765dfdf7c58bf?w=1200&auto=format&fit=crop&q=80",
+      "author": "Asif Iqbal",
+      "categorySlug": "features",
+      "categoryTitle": "Special Features & Tech",
+      "status": "Published",
+      "publishedAt": "2026-06-02T09:00:00.000Z"
+    }
+  },
+  "products": {
+    "tata-harrier-ev": {
+      "name": "Tata Harrier EV",
+      "brand": "Tata",
+      "type": "EV",
+      "price": 2499000,
+      "status": "Published",
+      "stock": 1,
+      "description": "Electric SUV with a premium cabin, long-range battery pack, and all-wheel-drive capability.",
+      "image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=1200&auto=format&fit=crop&q=80",
+      "imagePublicId": "",
+      "featured": true,
+      "createdAt": "2026-06-11T09:00:00.000Z",
+      "updatedAt": "2026-06-11T09:00:00.000Z"
+    },
+    "yamaha-r15": {
+      "name": "Yamaha R15",
+      "brand": "Yamaha",
+      "type": "Bike",
+      "price": 195000,
+      "status": "Published",
+      "stock": 1,
+      "description": "Track-inspired 155cc sport bike with variable valve actuation and a lightweight chassis.",
+      "image": "https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=1200&auto=format&fit=crop&q=80",
+      "imagePublicId": "",
+      "featured": true,
+      "createdAt": "2026-06-11T09:00:00.000Z",
+      "updatedAt": "2026-06-11T09:00:00.000Z"
+    },
+    "bmw-x5": {
+      "name": "BMW X5 LCI",
+      "brand": "BMW",
+      "type": "Car",
+      "price": 9800000,
+      "status": "Published",
+      "stock": 1,
+      "description": "Luxury performance SUV with a mild-hybrid six-cylinder engine and adaptive suspension.",
+      "image": "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=1200&auto=format&fit=crop&q=80",
+      "imagePublicId": "",
+      "featured": false,
+      "createdAt": "2026-06-10T09:00:00.000Z",
+      "updatedAt": "2026-06-10T09:00:00.000Z"
+    }
+  }
+}

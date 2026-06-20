@@ -1,0 +1,74 @@
+{
+  "products": {
+    "tata-punch-ev": {
+      "name": "Tata Punch EV",
+      "brand": "Tata",
+      "type": "EV",
+      "price": 1099000,
+      "status": "Published",
+      "stock": 1,
+      "description": "Compact electric SUV with a modern cabin, city-friendly dimensions, and a practical everyday driving range.",
+      "image": "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1200&auto=format&fit=crop&q=80",
+      "imagePublicId": "",
+      "featured": true,
+      "createdAt": "2026-06-21T10:00:00.000Z",
+      "updatedAt": "2026-06-21T10:00:00.000Z"
+    },
+    "mahindra-xuv-3xo": {
+      "name": "Mahindra XUV 3XO",
+      "brand": "Mahindra",
+      "type": "Car",
+      "price": 799000,
+      "status": "Published",
+      "stock": 1,
+      "description": "Feature-rich compact SUV with turbocharged performance, a panoramic skyroof, and a well-equipped interior.",
+      "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1200&auto=format&fit=crop&q=80",
+      "imagePublicId": "",
+      "featured": false,
+      "createdAt": "2026-06-21T10:00:00.000Z",
+      "updatedAt": "2026-06-21T10:00:00.000Z"
+    },
+    "maruti-suzuki-fronx": {
+      "name": "Maruti Suzuki Fronx",
+      "brand": "Maruti Suzuki",
+      "type": "Car",
+      "price": 752000,
+      "status": "Published",
+      "stock": 1,
+      "description": "Stylish crossover with efficient petrol engines, elevated ground clearance, and a connected infotainment system.",
+      "image": "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?w=1200&auto=format&fit=crop&q=80",
+      "imagePublicId": "",
+      "featured": true,
+      "createdAt": "2026-06-21T10:00:00.000Z",
+      "updatedAt": "2026-06-21T10:00:00.000Z"
+    },
+    "hyundai-venue": {
+      "name": "Hyundai Venue",
+      "brand": "Hyundai",
+      "type": "Car",
+      "price": 794000,
+      "status": "Published",
+      "stock": 1,
+      "description": "Connected compact SUV with contemporary styling, multiple engine choices, and a feature-packed cabin.",
+      "image": "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1200&auto=format&fit=crop&q=80",
+      "imagePublicId": "",
+      "featured": false,
+      "createdAt": "2026-06-21T10:00:00.000Z",
+      "updatedAt": "2026-06-21T10:00:00.000Z"
+    },
+    "royal-enfield-classic-350": {
+      "name": "Royal Enfield Classic 350",
+      "brand": "Royal Enfield",
+      "type": "Bike",
+      "price": 193000,
+      "status": "Published",
+      "stock": 1,
+      "description": "Timeless retro motorcycle with relaxed ergonomics, a refined engine, and an unmistakable road presence.",
+      "image": "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=1200&auto=format&fit=crop&q=80",
+      "imagePublicId": "",
+      "featured": true,
+      "createdAt": "2026-06-21T10:00:00.000Z",
+      "updatedAt": "2026-06-21T10:00:00.000Z"
+    }
+  }
+}

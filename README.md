@@ -1,4 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Auto Pulse India is a Next.js application backed by Firebase Realtime Database.
+
+## Backend setup
+
+The database at `https://auto-pulse-india-2-default-rtdb.firebaseio.com/` is initialized with the base collections in `database.seed.json`.
+
+Add this to `.env.local` (the application also has this URL as a safe fallback):
+
+```bash
+NEXT_PUBLIC_FIREBASE_DATABASE_URL=https://auto-pulse-india-2-default-rtdb.firebaseio.com
+```
+
+Before exposing the site, deploy the included Realtime Database rules. The rules deliberately make articles, categories, and products public-readable; they restrict all administration to the Firebase Auth account `admin@autopulse.local`, and allow only initial public submissions for newsletter subscriptions and contact messages.
+
+```bash
+npx firebase-tools login
+npx firebase-tools use auto-pulse-india-2
+npx firebase-tools deploy --only database
+```
+
+If your `NEXT_PUBLIC_ADMIN_FIREBASE_EMAIL` is not `admin@autopulse.local`, replace that email in `database.rules.json` before deploying. Enable Email/Password in Firebase Authentication and create that one Firebase user with the same password configured in `ADMIN_PASSWORD`.
+
+The public server endpoints are:
+
+- `GET /api/news` — articles and categories, with optional `category`, `search`, and `limit`.
+- `POST /api/subscribe` — stores a de-duplicated newsletter email.
+- `POST /api/contact` — stores a contact message.
+
+The admin console has live Realtime Database CRUD for products, articles, categories, subscribers, and messages.
 
 ## Getting Started
 

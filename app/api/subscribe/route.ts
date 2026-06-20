@@ -1,12 +1,4 @@
-import { db } from "@/lib/firebase"; // আপনার ফোল্ডার স্ট্রাকচার অনুযায়ী পাথ ঠিক আছে
-import {
-  collection,
-  addDoc,
-  getDocs,
-  query,
-  where,
-  orderBy,
-} from "firebase/firestore";
+import { emailKey, readRecord, writeRecord } from "@/lib/realtime-db";
 
 type SubscribePayload = {
   email?: string;
@@ -16,23 +8,8 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-// GET: মোট সাবস্ক্রাইবার সংখ্যা দেখার জন্য
 export async function GET() {
-  try {
-    const subscribersRef = collection(db, "subscribers");
-    const snapshot = await getDocs(subscribersRef);
-
-    return Response.json({
-      ok: true,
-      endpoint: "/api/subscribe",
-      subscribersCount: snapshot.size, // ফায়ারস্টোরের টোটাল ডকুমেন্টের সংখ্যা
-    });
-  } catch (error) {
-    return Response.json(
-      { error: "Failed to fetch subscribers count." },
-      { status: 500 },
-    );
-  }
+  return Response.json({ ok: true, endpoint: "/api/subscribe" });
 }
 
 // POST: নতুন ইমেইল সাবস্ক্রাইব করার জন্য
@@ -55,21 +32,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const subscribersRef = collection(db, "subscribers");
-
-    // ১. ডাটাবেসে এই ইমেইলটি অলরেডি আছে কিনা চেক করা
-    const q = query(subscribersRef, where("email", "==", email));
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
+    const key = emailKey(email);
+    if (await readRecord(`subscribers/${key}`)) {
       return Response.json({
         success: true,
         message: "You are already subscribed.",
       });
     }
 
-    // ২. ডাটাবেসে নতুন সাবস্ক্রাইবার হিসেবে ইমেইল এবং টাইমস্ট্যাম্প সেভ করা
-    await addDoc(subscribersRef, {
+    await writeRecord(`subscribers/${key}`, {
       email,
       subscribedAt: new Date().toISOString(),
     });
@@ -81,7 +52,7 @@ export async function POST(request: Request) {
       },
       { status: 201 },
     );
-  } catch (error) {
+  } catch {
     return Response.json(
       { error: "An error occurred while processing your request." },
       { status: 400 },

@@ -1,122 +1,56 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
-import { FaChevronLeft, FaFolderOpen, FaClock, FaUser } from "react-icons/fa";
-import { categoryDetailsData } from "@/lib/news";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { onValue, ref } from "firebase/database";
+import { FaChevronLeft, FaClock, FaFolderOpen, FaUser } from "react-icons/fa";
+import { db } from "@/lib/firebase";
+
+type Category = { title?: string; description?: string };
+type Article = {
+  id: string;
+  title?: string;
+  excerpt?: string;
+  image?: string;
+  author?: string;
+  categorySlug?: string;
+  status?: string;
+  publishedAt?: string;
+};
+
+function dateLabel(value?: string) {
+  if (!value) return "Recently added";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+}
 
 export default function CategoryPage() {
-  const params = useParams();
-  const slug = (params?.slug as string) || "";
+  const params = useParams<{ slug: string }>();
+  const slug = params.slug;
+  const [category, setCategory] = useState<Category | null>(null);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [ready, setReady] = useState(false);
 
-  // যদি ম্যাপিং ডেটা খুঁজে পাওয়া যায়, তবে তা এসাইন হবে; অন্যথায় একটি ফলব্যাক ডেটা শো করবে।
-  const currentCategory = categoryDetailsData[slug] || {
-    title: slug.replace(/-/g, " "),
-    description:
-      "Explore the latest automotive insights, specifications, and news curated specifically for this segment.",
-    articles: [],
-  };
+  useEffect(() => {
+    const stopCategory = onValue(ref(db, `categories/${slug}`), (snapshot) => {
+      setCategory(snapshot.val() as Category | null);
+    });
+    const stopArticles = onValue(ref(db, "articles"), (snapshot) => {
+      const nextArticles = Object.entries(snapshot.val() ?? {})
+        .map(([id, article]) => ({ id, ...(article as Omit<Article, "id">) }))
+        .filter((article) => article.status !== "Draft" && article.categorySlug === slug)
+        .sort((a, b) => String(b.publishedAt ?? "").localeCompare(String(a.publishedAt ?? "")));
+      setArticles(nextArticles);
+      setReady(true);
+    });
+    return () => { stopCategory(); stopArticles(); };
+  }, [slug]);
 
-  return (
-    <main className="bg-white min-h-screen text-zinc-900 select-none py-12 px-4">
-      <div className="max-w-6xl mx-auto">
-        {/* BACK TO HOME BUTTON */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-xs font-black tracking-widest uppercase text-red-600 hover:text-red-500 hover:underline mb-8 transition-colors cursor-pointer"
-        >
-          <FaChevronLeft size={10} /> Back to Home
-        </Link>
+  const title = category?.title ?? slug.replace(/-/g, " ");
+  const description = category?.description ?? "Explore the latest automotive insights, specifications, and news curated for this segment.";
+  if (!ready) return <main className="grid min-h-screen place-items-center bg-white text-sm font-semibold text-zinc-500">Loading category…</main>;
 
-        {/* Category Header */}
-        <div className="border-b border-zinc-200 pb-6 mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="bg-zinc-100 p-3 rounded-md text-red-600 shrink-0">
-              <FaFolderOpen size={32} />
-            </div>
-            <div>
-              <span className="text-[9px] bg-red-100 text-red-600 px-2 py-0.5 rounded-sm font-extrabold uppercase tracking-widest">
-                AutoPulse Category
-              </span>
-              <h1 className="text-3xl font-black uppercase tracking-wider text-zinc-900 mt-1">
-                {currentCategory.title}
-              </h1>
-            </div>
-          </div>
-          {/* Section Dynamic Long Description */}
-          <p className="text-xs text-zinc-500 font-medium max-w-xl md:text-right leading-relaxed">
-            {currentCategory.description}
-          </p>
-        </div>
-
-        {/* Articles & Details Grid Section */}
-        {currentCategory.articles.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {currentCategory.articles.map((article) => (
-              <article
-                key={article.id}
-                className="bg-[#fcfcfc] border border-zinc-200 rounded-md overflow-hidden flex flex-col justify-between hover:shadow-md transition-all group"
-              >
-                {/* News Image */}
-                <div className="relative w-full h-56 sm:h-64 bg-zinc-100 overflow-hidden">
-                  <Image
-                    src={article.image}
-                    alt={article.title}
-                    fill
-                    sizes="(min-width: 768px) 50vw, 100vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-
-                {/* News Details */}
-                <div className="p-6 flex-1 flex flex-col justify-between">
-                  <div>
-                    {/* Meta Info */}
-                    <div className="flex items-center gap-4 text-[11px] text-zinc-400 font-bold uppercase tracking-wider mb-3">
-                      <span className="flex items-center gap-1">
-                        <FaUser size={10} className="text-red-600" />{" "}
-                        {article.author}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <FaClock size={10} className="text-zinc-400" />{" "}
-                        {article.date}
-                      </span>
-                    </div>
-
-                    <h2 className="text-base font-black text-zinc-900 uppercase tracking-wide group-hover:text-red-600 transition-colors mb-3 leading-snug">
-                      {article.title}
-                    </h2>
-
-                    <p className="text-xs text-zinc-500 font-medium leading-relaxed mb-4">
-                      {article.excerpt}
-                    </p>
-                  </div>
-
-                  <Link
-                    href="#"
-                    className="inline-block border border-zinc-900 text-zinc-900 text-center font-black text-[10px] uppercase tracking-widest py-2 px-4 rounded-sm hover:bg-red-600 hover:text-white hover:border-red-600 transition-all mt-2"
-                  >
-                    Read Full Story
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        ) : (
-          /* Empty/Fallback State */
-          <div className="bg-[#fcfcfc] border border-zinc-200 rounded-md p-12 text-center shadow-sm">
-            <p className="text-zinc-500 font-bold text-sm uppercase tracking-wide">
-              No recent entries found in{" "}
-              <span className="text-red-600">{currentCategory.title}</span>.
-            </p>
-            <p className="text-xs text-zinc-400 font-medium mt-2 max-w-sm mx-auto">
-              Our auto journalists are currently working on live updates. Check
-              back shortly.
-            </p>
-          </div>
-        )}
-      </div>
-    </main>
-  );
+  return <main className="min-h-screen select-none bg-white px-4 py-12 text-zinc-900"><div className="mx-auto max-w-6xl"><Link href="/" className="mb-8 inline-flex cursor-pointer items-center gap-2 text-xs font-black uppercase tracking-widest text-red-600 transition-colors hover:text-red-500 hover:underline"><FaChevronLeft size={10} /> Back to Home</Link><div className="mb-10 flex flex-col justify-between gap-4 border-b border-zinc-200 pb-6 md:flex-row md:items-center"><div className="flex items-center gap-4"><div className="shrink-0 rounded-md bg-zinc-100 p-3 text-red-600"><FaFolderOpen size={32} /></div><div><span className="rounded-sm bg-red-100 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-widest text-red-600">AutoPulse Category</span><h1 className="mt-1 text-3xl font-black uppercase tracking-wider text-zinc-900">{title}</h1></div></div><p className="max-w-xl text-xs font-medium leading-relaxed text-zinc-500 md:text-right">{description}</p></div>{articles.length ? <div className="grid grid-cols-1 gap-8 md:grid-cols-2">{articles.map((article) => <article key={article.id} className="group flex flex-col justify-between overflow-hidden rounded-md border border-zinc-200 bg-[#fcfcfc] transition-all hover:shadow-md"><div className="relative h-56 w-full overflow-hidden bg-zinc-100 sm:h-64">{article.image ? <Image src={article.image} alt={article.title ?? "Article image"} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-105" /> : <div className="grid h-full place-items-center text-sm font-semibold text-zinc-400">No image yet</div>}</div><div className="flex flex-1 flex-col justify-between p-6"><div><div className="mb-3 flex items-center gap-4 text-[11px] font-bold uppercase tracking-wider text-zinc-400"><span className="flex items-center gap-1"><FaUser size={10} className="text-red-600" /> {article.author ?? "AutoPulse Team"}</span><span className="flex items-center gap-1"><FaClock size={10} /> {dateLabel(article.publishedAt)}</span></div><h2 className="mb-3 text-base font-black uppercase tracking-wide leading-snug text-zinc-900 transition-colors group-hover:text-red-600">{article.title ?? "Untitled article"}</h2><p className="mb-4 text-xs font-medium leading-relaxed text-zinc-500">{article.excerpt ?? "Article details will be added soon."}</p></div></div></article>)}</div> : <div className="rounded-md border border-zinc-200 bg-[#fcfcfc] p-12 text-center shadow-sm"><p className="text-sm font-bold uppercase tracking-wide text-zinc-500">No published entries found in <span className="text-red-600">{title}</span>.</p><p className="mx-auto mt-2 max-w-sm text-xs font-medium text-zinc-400">Add a published article in the admin panel and it will appear here automatically.</p></div>}</div></main>;
 }

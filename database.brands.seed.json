@@ -1,0 +1,69 @@
+{
+  "brands": {
+    "tata": { "name": "Tata", "description": "Discover Tata cars and electric vehicles with price, image, and specification details." },
+    "mahindra": { "name": "Mahindra", "description": "Explore Mahindra SUVs and their latest vehicle details." },
+    "maruti-suzuki": { "name": "Maruti Suzuki", "description": "Browse popular Maruti Suzuki cars and their key details." },
+    "hyundai": { "name": "Hyundai", "description": "Explore Hyundai cars, features, and vehicle pricing." },
+    "royal-enfield": { "name": "Royal Enfield", "description": "Browse Royal Enfield motorcycles with images, pricing, and details." },
+    "yamaha": { "name": "Yamaha", "description": "Explore Yamaha motorcycles and performance vehicles." },
+    "bmw": { "name": "BMW", "description": "Discover BMW luxury vehicles and their details." }
+  },
+  "products": {
+    "mahindra-thar-roxx": {
+      "name": "Mahindra Thar Roxx",
+      "brand": "Mahindra",
+      "type": "Car",
+      "price": 1499000,
+      "status": "Published",
+      "stock": 1,
+      "description": "Five-door lifestyle SUV with robust off-road capability, modern safety tech, and a spacious cabin.",
+      "image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=1200&auto=format&fit=crop&q=80",
+      "imagePublicId": "",
+      "featured": true,
+      "createdAt": "2026-06-20T09:00:00.000Z",
+      "updatedAt": "2026-06-20T09:00:00.000Z"
+    },
+    "maruti-suzuki-dzire": {
+      "name": "Maruti Suzuki Dzire",
+      "brand": "Maruti Suzuki",
+      "type": "Car",
+      "price": 679000,
+      "status": "Published",
+      "stock": 1,
+      "description": "Efficient compact sedan with a practical cabin, smooth automatic option, and everyday comfort.",
+      "image": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200&auto=format&fit=crop&q=80",
+      "imagePublicId": "",
+      "featured": false,
+      "createdAt": "2026-06-20T09:00:00.000Z",
+      "updatedAt": "2026-06-20T09:00:00.000Z"
+    },
+    "hyundai-creta-electric": {
+      "name": "Hyundai Creta Electric",
+      "brand": "Hyundai",
+      "type": "EV",
+      "price": 1799000,
+      "status": "Published",
+      "stock": 1,
+      "description": "Electric compact SUV combining a familiar Creta package with a refined, zero-emission drivetrain.",
+      "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1200&auto=format&fit=crop&q=80",
+      "imagePublicId": "",
+      "featured": true,
+      "createdAt": "2026-06-20T09:00:00.000Z",
+      "updatedAt": "2026-06-20T09:00:00.000Z"
+    },
+    "royal-enfield-himalayan": {
+      "name": "Royal Enfield Himalayan 450",
+      "brand": "Royal Enfield",
+      "type": "Bike",
+      "price": 285000,
+      "status": "Published",
+      "stock": 1,
+      "description": "Adventure motorcycle with long-travel suspension, a versatile riding position, and all-road confidence.",
+      "image": "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=1200&auto=format&fit=crop&q=80",
+      "imagePublicId": "",
+      "featured": true,
+      "createdAt": "2026-06-20T09:00:00.000Z",
+      "updatedAt": "2026-06-20T09:00:00.000Z"
+    }
+  }
+}

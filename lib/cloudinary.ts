@@ -19,10 +19,20 @@ export async function uploadProductImage(file: File): Promise<CloudinaryUpload> 
   body.append("upload_preset", uploadPreset);
   body.append("folder", "auto-pulse/products");
 
-  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-    method: "POST",
-    body,
-  });
+  let response: Response;
+  try {
+    response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method: "POST",
+      body,
+      signal: AbortSignal.timeout(30_000),
+    });
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "TimeoutError") {
+      throw new Error("Image upload timed out. Check your connection and try a smaller image.");
+    }
+    throw new Error("Unable to reach Cloudinary. Check your connection and try again.");
+  }
+
   const result = (await response.json()) as {
     secure_url?: string;
     public_id?: string;

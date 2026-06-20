@@ -17,6 +17,22 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 
+type NavigationCategory = {
+  slug: string;
+  title: string;
+};
+
+const fallbackCategories: NavigationCategory[] = [
+  { slug: "car-news", title: "Car News" },
+  { slug: "bike-news", title: "Bike News" },
+  { slug: "reviews", title: "Reviews" },
+  { slug: "comparisons", title: "Comparisons" },
+  { slug: "upcoming-vehicles", title: "Upcoming Vehicles" },
+  { slug: "videos", title: "Videos" },
+  { slug: "features", title: "Features" },
+];
+const chevronCategories = new Set(["car-news", "bike-news", "reviews", "videos", "features"]);
+
 export default function Navbar() {
   const pathname = usePathname();
   const [currentDate] = useState(() => {
@@ -31,6 +47,8 @@ export default function Navbar() {
   });
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [categories, setCategories] = useState<NavigationCategory[]>([]);
+  const categoryLinks = categories.length ? categories : fallbackCategories;
 
   const applyTheme = (enabled: boolean) => {
     document.documentElement.classList.toggle("dark", enabled);
@@ -45,6 +63,26 @@ export default function Navbar() {
 
     document.documentElement.classList.toggle("dark", enabled);
     requestAnimationFrame(() => setDarkMode(enabled));
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch("/api/news")
+      .then((response) => response.json() as Promise<{ categories?: NavigationCategory[] }>)
+      .then((data) => {
+        const validCategories = (data.categories ?? []).filter(
+          (category) => category.slug && category.title,
+        );
+        if (active && validCategories.length) setCategories(validCategories);
+      })
+      .catch(() => {
+        // Keep the fallback navigation available if the backend is unavailable.
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   if (pathname.startsWith("/admin")) {
@@ -187,48 +225,16 @@ export default function Navbar() {
             </Link>
 
             <div className="flex items-center text-[11px] font-extrabold tracking-widest uppercase text-zinc-700 dark:text-zinc-300">
-              <Link
-                href="/category/car-news"
-                className="px-4 py-4 hover:bg-zinc-50 hover:text-red-600 transition-all flex items-center gap-1.5 border-r border-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-900"
-              >
-                Car News <FaChevronDown size={9} className="text-zinc-400" />
-              </Link>
-              <Link
-                href="/category/bike-news"
-                className="px-4 py-4 hover:bg-zinc-50 hover:text-red-600 transition-all flex items-center gap-1.5 border-r border-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-900"
-              >
-                Bike News <FaChevronDown size={9} className="text-zinc-400" />
-              </Link>
-              <Link
-                href="/category/reviews"
-                className="px-4 py-4 hover:bg-zinc-50 hover:text-red-600 transition-all flex items-center gap-1.5 border-r border-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-900"
-              >
-                Reviews <FaChevronDown size={9} className="text-zinc-400" />
-              </Link>
-              <Link
-                href="/category/comparisons"
-                className="px-4 py-4 hover:bg-zinc-50 hover:text-red-600 transition-all border-r border-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-900"
-              >
-                Comparisons
-              </Link>
-              <Link
-                href="/category/upcoming-vehicles"
-                className="px-4 py-4 hover:bg-zinc-50 hover:text-red-600 transition-all border-r border-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-900"
-              >
-                Upcoming Vehicles
-              </Link>
-              <Link
-                href="/category/videos"
-                className="px-4 py-4 hover:bg-zinc-50 hover:text-red-600 transition-all flex items-center gap-1.5 border-r border-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-900"
-              >
-                Videos <FaChevronDown size={9} className="text-zinc-400" />
-              </Link>
-              <Link
-                href="/category/features"
-                className="px-4 py-4 hover:bg-zinc-50 hover:text-red-600 transition-all flex items-center gap-1.5 dark:hover:bg-zinc-900"
-              >
-                Features <FaChevronDown size={9} className="text-zinc-400" />
-              </Link>
+              {categoryLinks.map((category, index) => (
+                <Link
+                  key={category.slug}
+                  href={`/category/${category.slug}`}
+                  className={`px-4 py-4 hover:bg-zinc-50 hover:text-red-600 transition-all flex items-center gap-1.5 dark:hover:bg-zinc-900 ${index < categoryLinks.length - 1 ? "border-r border-zinc-100 dark:border-zinc-800" : ""}`}
+                >
+                  {category.title}
+                  {chevronCategories.has(category.slug) && <FaChevronDown size={9} className="text-zinc-400" />}
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -246,55 +252,17 @@ export default function Navbar() {
               >
                 Home
               </Link>
-              <Link
-                href="/category/car-news"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-3 hover:bg-zinc-50 border-b border-zinc-100 flex justify-between items-center dark:border-zinc-800 dark:hover:bg-zinc-900"
-              >
-                Car News <FaChevronDown size={10} />
-              </Link>
-              <Link
-                href="/category/bike-news"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-3 hover:bg-zinc-50 border-b border-zinc-100 flex justify-between items-center dark:border-zinc-800 dark:hover:bg-zinc-900"
-              >
-                Bike News <FaChevronDown size={10} />
-              </Link>
-              <Link
-                href="/category/reviews"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-3 hover:bg-zinc-50 border-b border-zinc-100 flex justify-between items-center dark:border-zinc-800 dark:hover:bg-zinc-900"
-              >
-                Reviews <FaChevronDown size={10} />
-              </Link>
-              <Link
-                href="/category/comparisons"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-3 hover:bg-zinc-50 border-b border-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-900"
-              >
-                Comparisons
-              </Link>
-              <Link
-                href="/category/upcoming-vehicles"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-3 hover:bg-zinc-50 border-b border-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-900"
-              >
-                Upcoming Vehicles
-              </Link>
-              <Link
-                href="/category/videos"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-3 hover:bg-zinc-50 border-b border-zinc-100 flex justify-between items-center dark:border-zinc-800 dark:hover:bg-zinc-900"
-              >
-                Videos <FaChevronDown size={10} />
-              </Link>
-              <Link
-                href="/category/features"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-3 hover:bg-zinc-50 dark:hover:bg-zinc-900"
-              >
-                Features
-              </Link>
+              {categoryLinks.map((category, index) => (
+                <Link
+                  key={category.slug}
+                  href={`/category/${category.slug}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`p-3 hover:bg-zinc-50 flex justify-between items-center dark:hover:bg-zinc-900 ${index < categoryLinks.length - 1 ? "border-b border-zinc-100 dark:border-zinc-800" : ""}`}
+                >
+                  {category.title}
+                  {chevronCategories.has(category.slug) && <FaChevronDown size={10} />}
+                </Link>
+              ))}
             </div>
           )}
         </div>

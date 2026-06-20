@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
+import { onValue, ref } from "firebase/database";
 import { AiOutlineSafetyCertificate } from "react-icons/ai";
 import {
   FaChevronLeft,
@@ -15,8 +16,18 @@ import {
 } from "react-icons/fa";
 import { IoSpeedometerOutline } from "react-icons/io5";
 import { MdOutlineOndemandVideo } from "react-icons/md";
+import { db } from "@/lib/firebase";
 
 type SubscribeStatus = "idle" | "success" | "error";
+type BrandLink = { slug: string; name: string };
+
+const fallbackBrands: BrandLink[] = [
+  { slug: "tata", name: "Tata" },
+  { slug: "mahindra", name: "Mahindra" },
+  { slug: "maruti-suzuki", name: "Maruti Suzuki" },
+  { slug: "hyundai", name: "Hyundai" },
+  { slug: "royal-enfield", name: "Royal Enfield" },
+];
 
 // Upcoming Vehicles Mock Data for Slider
 const UPCOMING_VEHICLES_DATA = [
@@ -65,10 +76,19 @@ export default function Home() {
   const [subscribeStatus, setSubscribeStatus] =
     useState<SubscribeStatus>("idle");
   const [subscribeMessage, setSubscribeMessage] = useState("");
+  const [brands, setBrands] = useState<BrandLink[]>(fallbackBrands);
 
   // Slider controls (Shows 4 items at a time)
   const itemsPerPage = 4;
   const maxIndex = UPCOMING_VEHICLES_DATA.length - itemsPerPage;
+
+  useEffect(() => onValue(ref(db, "brands"), (snapshot) => {
+    const liveBrands = Object.entries(snapshot.val() ?? {}).map(([slug, value]) => ({
+      slug,
+      name: String((value as { name?: string }).name ?? slug),
+    }));
+    if (liveBrands.length) setBrands(liveBrands);
+  }), []);
 
   const nextSlide = () => {
     if (currentIndex < maxIndex) {
@@ -588,31 +608,7 @@ export default function Home() {
               Popular Brands
             </h4>
             <ul className="flex flex-col gap-2.5 font-bold text-zinc-500 text-[11px]">
-              <li>
-                <a href="#" className="hover:text-red-500 transition-colors">
-                  Tata
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-red-500 transition-colors">
-                  Mahindra
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-red-500 transition-colors">
-                  Maruti Suzuki
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-red-500 transition-colors">
-                  Hyundai
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-red-500 transition-colors">
-                  Royal Enfield
-                </a>
-              </li>
+              {brands.map((brand) => <li key={brand.slug}><Link href={`/brands/${brand.slug}`} className="hover:text-red-500 transition-colors">{brand.name}</Link></li>)}
             </ul>
           </div>
 

@@ -1,9 +1,17 @@
-"use client";
-
 import Link from "next/link";
 import { FaChevronRight, FaSitemap } from "react-icons/fa";
+import { readRecord } from "@/lib/realtime-db";
 
-export default function Sitemap() {
+export const dynamic = "force-dynamic";
+
+type Brand = { name: string };
+
+export default async function Sitemap() {
+  const brands = await readRecord<Record<string, Brand>>("brands");
+  const brandLinks = Object.entries(brands ?? {}).map(([slug, brand]) => ({
+    name: brand.name,
+    href: `/brands/${slug}`,
+  }));
   const sitemapData = [
     {
       title: "Main Pages",
@@ -27,13 +35,7 @@ export default function Sitemap() {
     },
     {
       title: "Popular Brands",
-      links: [
-        { name: "Tata", href: "#" },
-        { name: "Mahindra", href: "#" },
-        { name: "Maruti Suzuki", href: "#" },
-        { name: "Hyundai", href: "#" },
-        { name: "Royal Enfield", href: "#" },
-      ],
+      links: brandLinks,
     },
   ];
 
