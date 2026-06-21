@@ -70,16 +70,6 @@
       "status": "Published",
       "publishedAt": "2026-06-05T09:00:00.000Z"
     },
-    "thar-armado-video": {
-      "title": "Video: Mahindra Thar 5-Door Armado Deep Mud Off-Road Test",
-      "excerpt": "We take the rugged five-door Thar into extreme slush to test its updated differential and low-range gearbox.",
-      "image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=1200&auto=format&fit=crop&q=80",
-      "author": "AutoPulse Media",
-      "categorySlug": "videos",
-      "categoryTitle": "Videos & Walkarounds",
-      "status": "Published",
-      "publishedAt": "2026-06-11T12:00:00.000Z"
-    },
     "dual-chamber-air-suspension": {
       "title": "How Dual-Chamber Air Suspension Works in Modern Vehicles",
       "excerpt": "A clear breakdown of the physics and electronics behind modern adaptive air-suspension systems.",
@@ -89,6 +79,17 @@
       "categoryTitle": "Special Features & Tech",
       "status": "Published",
       "publishedAt": "2026-06-02T09:00:00.000Z"
+    }
+  },
+  "videos": {
+    "thar-armado-video": {
+      "title": "Video: Mahindra Thar 5-Door Armado Deep Mud Off-Road Test",
+      "excerpt": "We take the rugged five-door Thar into extreme slush to test its updated differential and low-range gearbox.",
+      "image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=1200&auto=format&fit=crop&q=80",
+      "author": "AutoPulse Media",
+      "videoUrl": "https://auto.hindustantimes.com/auto/cars/watch-mahindra-thar-5-door-gets-stuck-in-mud-41708588700494.html",
+      "status": "Published",
+      "publishedAt": "2026-06-11T12:00:00.000Z"
     }
   },
   "products": {

@@ -9,7 +9,7 @@ import { FiArchive, FiBarChart2, FiBookOpen, FiCheckCircle, FiChevronRight, FiGr
 import { auth, db } from "@/lib/firebase";
 import { cloudinaryConfig, uploadProductImage } from "@/lib/cloudinary";
 
-type Section = "dashboard" | "products" | "articles" | "categories" | "subscribers" | "messages" | "settings";
+type Section = "dashboard" | "products" | "articles" | "videos" | "categories" | "subscribers" | "messages" | "settings";
 type Item = { id: string; [key: string]: unknown };
 type Draft = { name: string; brand: string; type: string; price: string; status: string; stock: string; image: string; imagePublicId: string; description: string; featured: boolean };
 
@@ -18,6 +18,7 @@ const nav: { id: Section; label: string; icon: ReactNode }[] = [
   { id: "dashboard", label: "Overview", icon: <FiGrid /> },
   { id: "products", label: "Products", icon: <FiArchive /> },
   { id: "articles", label: "Articles", icon: <FiBookOpen /> },
+  { id: "videos", label: "Videos", icon: <FiBookOpen /> },
   { id: "categories", label: "Categories", icon: <FiTag /> },
   { id: "subscribers", label: "Subscribers", icon: <FiUsers /> },
   { id: "messages", label: "Messages", icon: <FiInbox /> },
@@ -27,6 +28,7 @@ const copy: Record<Section, [string, string]> = {
   dashboard: ["Good morning", "Here is what is happening with AutoPulse today."],
   products: ["Products", "Manage your vehicle inventory and Cloudinary images."],
   articles: ["Articles", "Publish and maintain editorial content."],
+  videos: ["Videos & Walkarounds", "Publish and maintain playable video content."],
   categories: ["Categories", "Organize your editorial content."],
   subscribers: ["Subscribers", "Your newsletter audience in one place."],
   messages: ["Messages", "Review messages submitted through the contact page."],
@@ -108,7 +110,7 @@ export default function AdminClient() {
   const [allowed, setAllowed] = useState<boolean | null>(null);
   const [section, setSection] = useState<Section>("dashboard");
   const [menu, setMenu] = useState(false);
-  const [data, setData] = useState<Record<string, Item[]>>({ products: [], articles: [], categories: [], subscribers: [], messages: [] });
+  const [data, setData] = useState<Record<string, Item[]>>({ products: [], articles: [], videos: [], categories: [], subscribers: [], messages: [] });
   const [dataError, setDataError] = useState("");
 
   useEffect(() => onAuthStateChanged(auth, async (next) => {
@@ -119,7 +121,7 @@ export default function AdminClient() {
 
   useEffect(() => {
     if (!user || !allowed) return;
-    const names = ["products", "articles", "categories", "subscribers", "messages"];
+    const names = ["products", "articles", "videos", "categories", "subscribers", "messages"];
     const stops = names.map((name) => onSnapshot(collection(db, name), (snap) => {
       const rows = snap.docs.map((entry) => ({ id: entry.id, ...entry.data() }));
       setData((old) => ({ ...old, [name]: rows })); setDataError("");
@@ -140,7 +142,7 @@ export default function AdminClient() {
     {menu && <button aria-label="Close menu" onClick={() => setMenu(false)} className="fixed inset-0 z-30 bg-slate-950/50 lg:hidden" />}
     <div className="lg:pl-64">
       <header className="sticky top-0 z-20 flex h-20 items-center justify-between border-b border-slate-200/80 bg-white/90 px-5 backdrop-blur md:px-8"><div className="flex items-center gap-4"><button onClick={() => setMenu(true)} className="grid h-10 w-10 place-items-center rounded-xl border lg:hidden"><FiMenu /></button><div><h1 className="text-xl font-bold tracking-tight">{copy[section][0]}{section === "dashboard" ? ", " + (user.email || "admin").split("@")[0] : ""}</h1><p className="hidden text-xs text-slate-500 sm:block">{copy[section][1]}</p></div></div><Link href="/" target="_blank" className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold">View website</Link></header>
-      <div className="p-5 md:p-8">{dataError && <p className="mb-5 rounded-xl bg-red-50 p-4 text-sm text-red-700">{dataError}</p>}{section === "dashboard" && <Dashboard data={data} go={setSection} />}{section === "products" && <Products items={data.products} />}{section === "articles" && <Manager collectionName="articles" singular="article" items={data.articles} fields={["title", "excerpt", "author", "categorySlug", "image", "status"]} />}{section === "categories" && <Manager collectionName="categories" singular="category" items={data.categories} fields={["title", "slug", "description"]} />}{section === "subscribers" && <Inbox type="subscriber" items={data.subscribers} />}{section === "messages" && <Inbox type="message" items={data.messages} />}{section === "settings" && <Setup user={user} />}</div>
+      <div className="p-5 md:p-8">{dataError && <p className="mb-5 rounded-xl bg-red-50 p-4 text-sm text-red-700">{dataError}</p>}{section === "dashboard" && <Dashboard data={data} go={setSection} />}{section === "products" && <Products items={data.products} />}{section === "articles" && <Manager collectionName="articles" singular="article" items={data.articles} fields={["title", "excerpt", "author", "categorySlug", "image", "status"]} />}{section === "videos" && <Manager collectionName="videos" singular="video" items={data.videos} fields={["title", "excerpt", "author", "image", "videoUrl", "status"]} />}{section === "categories" && <Manager collectionName="categories" singular="category" items={data.categories} fields={["title", "slug", "description"]} />}{section === "subscribers" && <Inbox type="subscriber" items={data.subscribers} />}{section === "messages" && <Inbox type="message" items={data.messages} />}{section === "settings" && <Setup user={user} />}</div>
     </div>
   </main>;
 }
@@ -155,7 +157,7 @@ function ProductList({ items }: { items: Item[] }) {
 }
 
 function Dashboard({ data, go }: { data: Record<string, Item[]>; go: (section: Section) => void }) {
-  const stats = [["Total products", data.products.length, <FiArchive key="a" />, "bg-blue-50 text-blue-600"], ["Published articles", data.articles.length, <FiBookOpen key="b" />, "bg-violet-50 text-violet-600"], ["Subscribers", data.subscribers.length, <FiUsers key="c" />, "bg-emerald-50 text-emerald-600"], ["Unread messages", data.messages.filter((item) => item.status !== "read").length, <FiInbox key="d" />, "bg-orange-50 text-orange-600"]];
+  const stats = [["Total products", data.products.length, <FiArchive key="a" />, "bg-blue-50 text-blue-600"], ["Published articles", data.articles.length, <FiBookOpen key="b" />, "bg-violet-50 text-violet-600"], ["Published videos", data.videos.length, <FiBookOpen key="v" />, "bg-rose-50 text-rose-600"], ["Subscribers", data.subscribers.length, <FiUsers key="c" />, "bg-emerald-50 text-emerald-600"], ["Unread messages", data.messages.filter((item) => item.status !== "read").length, <FiInbox key="d" />, "bg-orange-50 text-orange-600"]];
   return <><div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">{stats.map((stat) => <div key={String(stat[0])} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex justify-between"><div><p className="text-xs font-semibold text-slate-500">{stat[0] as string}</p><p className="mt-3 text-3xl font-bold">{stat[1] as number}</p></div><div className={cx("grid h-11 w-11 place-items-center rounded-xl text-xl", stat[3] as string)}>{stat[2] as ReactNode}</div></div><p className="mt-5 flex items-center gap-1 text-[11px] font-semibold text-emerald-600"><FiCheckCircle /> Live from Realtime Database</p></div>)}</div><div className="mt-7 grid gap-7 xl:grid-cols-[1.4fr_1fr]"><Panel title="Recently added products" action={<button onClick={() => go("products")} className="text-xs font-bold text-red-600">Manage all</button>}><ProductList items={data.products.slice(0, 5)} /></Panel><Panel title="Quick actions"><div className="grid grid-cols-2 gap-3">{nav.slice(1, 5).map((item) => <button key={item.id} onClick={() => go(item.id)} className="flex min-h-28 flex-col justify-between rounded-2xl border bg-slate-50 p-4 text-left hover:bg-red-50"><span className="text-xl text-slate-500">{item.icon}</span><span className="text-sm font-bold">{item.label}</span></button>)}</div></Panel></div></>;
 }
 
@@ -193,7 +195,7 @@ function Products({ items }: { items: Item[] }) {
 function Manager({ collectionName, singular, items, fields }: { collectionName: string; singular: string; items: Item[]; fields: string[] }) {
   const [dialog, setDialog] = useState(false); const [editing, setEditing] = useState(""); const [values, setValues] = useState<Record<string, string>>({}); const [error, setError] = useState(""); const [uploading, setUploading] = useState(false);
   function open(item?: Item) { setEditing(item?.id || ""); setValues(Object.fromEntries(fields.map((field) => [field, String(item?.[field] || (field === "status" ? "Published" : ""))]))); setDialog(true); setError(""); }
-  async function save(event: FormEvent) { event.preventDefault(); try { const value = { ...values, updatedAt: serverTimestamp(), ...(collectionName === "articles" ? { publishedAt: new Date().toISOString() } : {}) }; if (editing) await updateDoc(doc(db, collectionName, editing), value); else await addDoc(collection(db, collectionName), { ...value, createdAt: serverTimestamp() }); setDialog(false); } catch (reason) { setError(errorText(reason)); } }
+  async function save(event: FormEvent) { event.preventDefault(); try { const value = { ...values, updatedAt: serverTimestamp(), ...((collectionName === "articles" || collectionName === "videos") ? { publishedAt: new Date().toISOString() } : {}) }; if (editing) await updateDoc(doc(db, collectionName, editing), value); else await addDoc(collection(db, collectionName), { ...value, createdAt: serverTimestamp() }); setDialog(false); } catch (reason) { setError(errorText(reason)); } }
   async function upload(file?: File) { if (!file) return; if (!file.type.startsWith("image/") || file.size > 8 * 1024 * 1024) { setError("Choose an image smaller than 8 MB."); return; } setUploading(true); setError(""); try { const result = await uploadProductImage(file); setValues((old) => ({ ...old, image: result.secureUrl })); } catch (reason) { setError(errorText(reason)); } finally { setUploading(false); } }
   return <><div className="mb-6 flex justify-end"><button onClick={() => open()} className="flex items-center gap-2 rounded-xl bg-red-600 px-4 py-3 text-sm font-bold text-white"><FiPlus /> Add {singular}</button></div><div className="overflow-hidden rounded-2xl border bg-white shadow-sm">{items.length ? <div className="divide-y">{items.map((item) => <div key={item.id} className="flex items-center gap-4 p-5"><div className="grid h-10 w-10 place-items-center rounded-xl bg-slate-100">{singular === "article" ? <FiBookOpen /> : <FiTag />}</div><div className="min-w-0 flex-1"><p className="truncate text-sm font-bold">{String(item.title || "Untitled")}</p><p className="truncate text-xs text-slate-500">{String(item.description || item.excerpt || item.slug || "")}</p></div><button onClick={() => open(item)} className="px-3 py-2 text-xs font-bold">Edit</button><button onClick={() => window.confirm("Delete this entry?") && deleteDoc(doc(db, collectionName, item.id))} className="text-red-500"><FiTrash2 /></button></div>)}</div> : <Empty text={"No " + singular + "s yet."} />}</div>{dialog && <Modal title={(editing ? "Edit " : "Add ") + singular} close={() => setDialog(false)}><form onSubmit={save} className="space-y-4">{fields.map((field) => <Field key={field} label={field.replace(/([A-Z])/g, " $1").replace(/^./, (letter) => letter.toUpperCase())}>{field === "description" || field === "excerpt" ? <textarea rows={3} className="admin-input resize-none" value={values[field] || ""} onChange={(e) => setValues({ ...values, [field]: e.target.value })} /> : field === "image" && collectionName === "articles" ? <><label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed bg-slate-50 p-4 text-sm font-bold"><FiImage /> {uploading ? "Uploading image…" : "Upload from PC to Cloudinary"}<input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={(e) => upload(e.target.files?.[0])} /></label><input className="admin-input mt-3" value={values[field] || ""} onChange={(e) => setValues({ ...values, [field]: e.target.value })} placeholder="Or paste image URL" /></> : <input required={field === "title" || field === "slug"} className="admin-input" value={values[field] || ""} onChange={(e) => setValues({ ...values, [field]: e.target.value })} />}</Field>)}{error && <p className="text-sm text-red-600">{error}</p>}<div className="flex justify-end"><button disabled={uploading} className="rounded-xl bg-red-600 px-5 py-3 text-sm font-bold text-white disabled:opacity-60">Save {singular}</button></div></form></Modal>}</>;
 }

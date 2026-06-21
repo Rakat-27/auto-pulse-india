@@ -309,9 +309,9 @@ export default function Home() {
             </div>
             <div className="flex flex-col gap-5">
               {[
-                "Maruti eVX Electric SUV - Expected Price",
-                "Bajaj Pulsar NS400Z Launched in India",
-              ].map((title, idx) => (
+                { title: "Maruti eVX Electric SUV - Expected Price", image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=200" },
+                { title: "Bajaj Pulsar NS400Z Launched in India", image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&q=80&w=200" },
+              ].map((item, idx) => (
                 <div
                   key={idx}
                   className="flex items-center gap-4 group cursor-pointer"
@@ -321,14 +321,14 @@ export default function Home() {
                   </span>
                   <div className="relative w-16 h-12 rounded-sm overflow-hidden bg-zinc-100 flex-shrink-0">
                     <Image
-                      src="https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=200"
-                      alt="car"
+                      src={item.image}
+                      alt={item.title}
                       fill
                       className="object-cover"
                     />
                   </div>
                   <h4 className="text-[12px] font-bold text-zinc-700 line-clamp-2 leading-snug group-hover:text-zinc-900 transition-colors">
-                    {title}
+                    {item.title}
                   </h4>
                 </div>
               ))}

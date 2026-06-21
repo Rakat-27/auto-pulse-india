@@ -3,6 +3,7 @@
     ".read": false,
     ".write": false,
     "articles": { ".read": true, ".write": "auth != null && auth.token.email === 'admin@autopulse.local'", ".indexOn": ["categorySlug", "publishedAt"] },
+    "videos": { ".read": true, ".write": "auth != null && auth.token.email === 'admin@autopulse.local'", ".indexOn": ["publishedAt"] },
     "categories": { ".read": true, ".write": "auth != null && auth.token.email === 'admin@autopulse.local'", ".indexOn": ["slug"] },
     "products": { ".read": true, ".write": "auth != null && auth.token.email === 'admin@autopulse.local'" },
     "siteSettings": {
