@@ -1,4 +1,5 @@
 import { emailKey, readRecord, writeRecord } from "@/lib/realtime-db";
+import { checkRateLimit, isSameOrigin, readJsonBody } from "@/lib/request-security";
 
 type SubscribePayload = {
   email?: string;
@@ -15,7 +16,19 @@ export async function GET() {
 // POST: নতুন ইমেইল সাবস্ক্রাইব করার জন্য
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as SubscribePayload;
+    if (!isSameOrigin(request)) {
+      return Response.json({ error: "Invalid request origin." }, { status: 403 });
+    }
+
+    const rateLimit = checkRateLimit(request, "subscribe", { limit: 3, windowMs: 60 * 60 * 1000 });
+    if (!rateLimit.allowed) {
+      return Response.json(
+        { error: "Too many subscription attempts. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } },
+      );
+    }
+
+    const body = await readJsonBody<SubscribePayload>(request, 1_000);
     const email = body.email?.trim().toLowerCase();
 
     if (!email) {
@@ -30,6 +43,10 @@ export async function POST(request: Request) {
         { error: "Please enter a valid email address." },
         { status: 400 },
       );
+    }
+
+    if (email.length > 254) {
+      return Response.json({ error: "Please enter a valid email address." }, { status: 400 });
     }
 
     const key = emailKey(email);
@@ -52,7 +69,10 @@ export async function POST(request: Request) {
       },
       { status: 201 },
     );
-  } catch {
+  } catch (error) {
+    if (error instanceof SyntaxError || error instanceof Error && error.message === "Request body is too large.") {
+      return Response.json({ error: "Invalid request body." }, { status: 400 });
+    }
     return Response.json(
       { error: "An error occurred while processing your request." },
       { status: 400 },

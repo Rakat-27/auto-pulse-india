@@ -1,4 +1,5 @@
 ﻿import { timingSafeEqual } from "node:crypto";
+import { checkRateLimit, isSameOrigin, readJsonBody } from "@/lib/request-security";
 
 type LoginBody = {
   userId?: string;
@@ -16,7 +17,19 @@ function matches(value: string, expected: string) {
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as LoginBody;
+    if (!isSameOrigin(request)) {
+      return Response.json({ error: "Invalid request origin." }, { status: 403 });
+    }
+
+    const rateLimit = checkRateLimit(request, "admin-login", { limit: 5, windowMs: 15 * 60 * 1000 });
+    if (!rateLimit.allowed) {
+      return Response.json(
+        { error: "Too many login attempts. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } },
+      );
+    }
+
+    const body = await readJsonBody<LoginBody>(request, 2_000);
     const userId = body.userId?.trim() ?? "";
     const password = body.password ?? "";
     const expectedUserId = process.env.ADMIN_USER_ID ?? "";
@@ -30,7 +43,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (
+    if (userId.length > 256 || password.length > 1_024 ||
       !matches(userId, expectedUserId) ||
       !matches(password, expectedPassword)
     ) {
@@ -41,7 +54,10 @@ export async function POST(request: Request) {
     }
 
     return Response.json({ firebaseEmail });
-  } catch {
+  } catch (error) {
+    if (error instanceof SyntaxError || error instanceof Error && error.message === "Request body is too large.") {
+      return Response.json({ error: "Invalid login request." }, { status: 400 });
+    }
     return Response.json({ error: "Invalid login request." }, { status: 400 });
   }
 }
